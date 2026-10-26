@@ -5,6 +5,7 @@ import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { settingsQuery } from "@/lib/queries";
 import { LaptopFrame, PhoneFrame, ScreenImage } from "./devices";
 import { MockFacebook, MockInstagram, MockWebsite } from "./screens";
+import { TrialOffer } from "./TrialOffer";
 const SECTORS = [
   "Restaurants",
   "Cafés",
@@ -26,6 +27,7 @@ export function Hero() {
       />
       <div className="container-x relative grid items-center gap-16 pb-16 lg:grid-cols-12 lg:gap-8 lg:pb-24">
         <div className="lg:col-span-6">
+          <TrialOffer />
           <h1
             className="text-balance text-[2.6rem] font-medium leading-[1.02] tracking-tight animate-enter sm:text-6xl xl:text-[4.6rem]"
             style={{ animationDelay: "80ms" }}

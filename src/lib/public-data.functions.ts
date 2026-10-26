@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
 import { contactSchema, isStoragePath } from "./site";
+import { TRIAL_SERVICE, trialSchema } from "./trial";
 
 type ProjectRow = Database["public"]["Tables"]["projects"]["Row"];
 type MediaRow = Database["public"]["Tables"]["project_media"]["Row"];
@@ -42,6 +43,49 @@ function publicClient() {
 }
 
 type Client = ReturnType<typeof publicClient>;
+
+export const confirmTrialRequest = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        accessToken: z.string().min(1).max(10000),
+        request: trialSchema.optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const client = publicClient();
+    // Validate with Auth, never trust a browser session or a decoded JWT alone.
+    const { data: auth, error: authError } = await client.auth.getUser(data.accessToken);
+    const user = auth.user;
+    if (authError || !user?.email_confirmed_at || !user.email)
+      throw new Error("Confirmez votre email avec le lien reçu avant de valider votre demande.");
+    const request = trialSchema.parse(data.request ?? user.user_metadata?.["trial_request"]);
+    if (request.email !== user.email.toLowerCase())
+      throw new Error("Utilisez le lien envoyé à l'adresse indiquée dans votre demande.");
+    // Stable id makes retries idempotent: one verified trial request per account.
+    // Use the existing anonymous INSERT policy; no service-role key is needed.
+    const { error } = await client.from("contact_messages").insert({
+      id: user.id,
+      name: request.name,
+      company: request.company,
+      contact: user.email,
+      service: TRIAL_SERVICE,
+      is_read: false,
+      message: [
+        "DEMANDE D'ESSAI GRATUIT — 10 JOURS",
+        "Email confirmé par lien Supabase.",
+        `Service souhaité : ${request.service}`,
+        "Le client accepte d'être contacté pour organiser son essai gratuit de 10 jours.",
+        "Début et périmètre à convenir ensemble. Aucun paiement automatique.",
+      ].join("\n"),
+    });
+    if (error && error.code !== "23505") {
+      console.error("[trial]", error);
+      throw new Error("Votre demande n'a pas pu être enregistrée. Réessayez.");
+    }
+    return { ok: true as const };
+  });
 
 /** Turns stored storage paths into browser-reachable signed URLs (in place). */
 async function signAll<T extends Record<string, unknown>>(

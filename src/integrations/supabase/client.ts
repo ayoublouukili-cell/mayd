@@ -82,6 +82,10 @@ function createSupabaseClient() {
       fetch: createSupabaseFetch(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY),
     },
     auth: {
+      // A promotional email link belongs to its own customer session.
+      detectSessionInUrl:
+        typeof window === "undefined" ||
+        new URLSearchParams(window.location.search).get("trial") !== "confirm",
       ...(localMode ? { storageKey: "mayd-local-auth" } : { storage: brokeredPreviewStorage() }),
       persistSession: true,
       autoRefreshToken: !localMode,
