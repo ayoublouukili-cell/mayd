@@ -62,36 +62,39 @@ describe("Free trial signup", () => {
     await screen.findByRole("alert");
     expect(mocks.otp).not.toHaveBeenCalled();
   });
-  it("confirms the returned session on the server before showing success", async () => {
-    window.history.replaceState(null, "", "/?trial=confirm");
-    mocks.session.mockResolvedValue({
-      data: {
-        session: {
-          access_token: "verified-token",
-          user: {
-            email: "sara@example.com",
-            user_metadata: {
-              trial_request: {
-                name: "Sara",
-                email: "sara@example.com",
-                company: "Café Sara",
-                service: "Création de site web",
-                consent: true,
+  it.each(["/?trial=confirm", "/#access_token=verified-token&type=magiclink"])(
+    "confirms the returned session on the server at %s before showing success",
+    async (url) => {
+      window.history.replaceState(null, "", url);
+      mocks.session.mockResolvedValue({
+        data: {
+          session: {
+            access_token: "verified-token",
+            user: {
+              email: "sara@example.com",
+              user_metadata: {
+                trial_request: {
+                  name: "Sara",
+                  email: "sara@example.com",
+                  company: "Café Sara",
+                  service: "Création de site web",
+                  consent: true,
+                },
               },
             },
           },
         },
-      },
-    });
-    render(<TrialOffer />);
-    await screen.findByText("Email confirmé, demande reçue !");
-    expect(mocks.confirm).toHaveBeenCalledWith({
-      data: { accessToken: "verified-token", request: undefined },
-    });
-    expect(window.location.search).toBe("");
-  });
+      });
+      render(<TrialOffer />);
+      await screen.findByText("Email confirmé, demande reçue !");
+      expect(mocks.confirm).toHaveBeenCalledWith({
+        data: { accessToken: "verified-token", request: undefined },
+      });
+      expect(window.location.search).toBe("");
+    },
+  );
   it("shows expired links as errors without saving a request", async () => {
-    window.history.replaceState(null, "", "/?trial=confirm#error=access_denied");
+    window.history.replaceState(null, "", "/#error=access_denied&error_code=otp_expired");
     render(<TrialOffer />);
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("expiré"));
     expect(mocks.confirm).not.toHaveBeenCalled();

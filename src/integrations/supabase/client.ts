@@ -2,6 +2,7 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 import { brokeredPreviewStorage } from "./previewAuthStorage";
+import { isTrialCallback } from "@/lib/trial-callback";
 
 function isNewSupabaseApiKey(value: string): boolean {
   return value.startsWith("sb_publishable_") || value.startsWith("sb_secret_");
@@ -85,7 +86,7 @@ function createSupabaseClient() {
       // A promotional email link belongs to its own customer session.
       detectSessionInUrl:
         typeof window === "undefined" ||
-        new URLSearchParams(window.location.search).get("trial") !== "confirm",
+        !isTrialCallback(window.location.search, window.location.hash),
       ...(localMode ? { storageKey: "mayd-local-auth" } : { storage: brokeredPreviewStorage() }),
       persistSession: true,
       autoRefreshToken: !localMode,

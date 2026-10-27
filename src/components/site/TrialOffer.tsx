@@ -4,6 +4,7 @@ import { ArrowUpRight, Check, Gift, Loader2, Mail } from "lucide-react";
 import { Text, useT } from "@/lib/i18n/Preferences";
 import { confirmTrialRequest } from "@/lib/public-data.functions";
 import { getTrialClient } from "@/lib/trial-client";
+import { isTrialCallback, trialReturnUrl } from "@/lib/trial-callback";
 import { trialSchema, type TrialInput } from "@/lib/trial";
 import { SERVICE_OPTIONS } from "@/lib/site";
 import {
@@ -37,7 +38,7 @@ export function TrialOffer() {
   }, [cooldown]);
 
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("trial") !== "confirm") return;
+    if (!isTrialCallback(window.location.search, window.location.hash)) return;
     setOpen(true);
     setStep("confirming");
     void (async () => {
@@ -104,7 +105,7 @@ export function TrialOffer() {
       const { error: sendError } = await client.auth.signInWithOtp({
         email: input.email,
         options: {
-          emailRedirectTo: `${window.location.origin}/?trial=confirm`,
+          emailRedirectTo: trialReturnUrl(window.location.origin),
           data: { trial_request: input },
         },
       });
