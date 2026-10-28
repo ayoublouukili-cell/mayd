@@ -1,4 +1,5 @@
 import { messages } from "./catalog";
+import { showroomMessages } from "./showroom-messages";
 import type { Language } from "./settings";
 
 // French source strings act as reusable gettext-style keys. One catalog for all views.
@@ -9,6 +10,10 @@ for (const [fr, values] of Object.entries(messages)) {
   canonical.set(values.ar, fr);
 }
 function exact(language: Language, value: string): string | undefined {
+  if (Object.hasOwn(showroomMessages, value))
+    return (showroomMessages as Record<string, { fr: string; en: string; ar: string }>)[value]?.[
+      language
+    ];
   const key = Object.hasOwn(messages, value) ? value : canonical.get(value);
   if (!key) return;
   return language === "fr" ? key : messages[key]?.[language];

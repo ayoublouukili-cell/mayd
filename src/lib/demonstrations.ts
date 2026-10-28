@@ -27,6 +27,7 @@ export type Demo = {
   services: { name: string; price: string; text: string }[];
   items: DemoItem[];
   events: { title: string; text: string }[];
+  menu?: { name: string; description: string; price: string; image: number }[];
 };
 const photos = (sector: string) =>
   Array.from({ length: 6 }, (_, i) => `/showroom/${sector}-${i + 1}.jpg`);
@@ -734,7 +735,190 @@ export const DEMOS: Demo[] = [
     ],
   },
 ];
+// The original database examples keep their own names and destinations.
+// They are not added to the editorial catalogue a second time.
+const baseDemo = (slug: string) => DEMOS.find((d) => d.slug === slug)!;
+export const LEGACY_WEBSITES: Demo[] = [
+  {
+    ...baseDemo("azahar-table"),
+    slug: "demo-cafe-de-quartier",
+    name: "Café de quartier",
+    sector: "Café & coffee shop",
+    initials: "CQ",
+    handle: "cafe.concept",
+    captions: [
+      "Le café",
+      "La pause",
+      "Les douceurs",
+      "Le petit-déjeuner",
+      "La salle",
+      "À partager",
+    ],
+    stories: ["Le café", "La carte", "Les douceurs", "La salle"],
+    headline: "Votre pause, tout simplement.",
+    intro:
+      "Un café de quartier, des pâtisseries et le plaisir de prendre son temps. Découvrez la carte et imaginez votre prochaine pause.",
+    bio: "Café de démonstration : boissons chaudes, douceurs et moments partagés.",
+    collection: "La carte du café",
+    action: "Simuler une réservation de table",
+    images: [
+      "/demo/cafe.jpg",
+      "/showroom/restaurant-6.jpg",
+      "/showroom/restaurant-5.jpg",
+      "/showroom/restaurant-4.jpg",
+      "/showroom/restaurant-1.jpg",
+      "/showroom/restaurant-3.jpg",
+    ],
+    services: [
+      { name: "Pause café", price: "25 MAD", text: "Un café et le temps de souffler." },
+      {
+        name: "Petit-déjeuner",
+        price: "55 MAD",
+        text: "Une boisson chaude et une sélection de douceurs.",
+      },
+      { name: "Goûter à partager", price: "75 MAD", text: "Une pause gourmande à deux." },
+    ],
+    menu: [
+      { name: "Espresso", description: "Un café court et généreux.", price: "18 MAD", image: 0 },
+      {
+        name: "Café & douceur",
+        description: "Une boisson chaude et une pâtisserie.",
+        price: "35 MAD",
+        image: 2,
+      },
+      {
+        name: "Petit-déjeuner maison",
+        description: "Le plaisir d'une matinée au café.",
+        price: "55 MAD",
+        image: 3,
+      },
+    ],
+    events: [],
+    items: [],
+  },
+  {
+    ...baseDemo("eclat-studio"),
+    slug: "demo-institut-beaute",
+    name: "Institut de beauté",
+    sector: "Salon de beauté",
+    initials: "IB",
+    handle: "institut.concept",
+    captions: ["L'institut", "Les soins", "Les détails", "Le rituel", "La détente", "L'accueil"],
+    stories: ["L'institut", "Les soins", "Les rituels", "Rendez-vous"],
+    headline: "Un moment rien que pour vous.",
+    intro:
+      "Des rituels de soin, une atmosphère douce et une attention portée à chaque détail. Découvrez l'univers de l'institut.",
+    bio: "Institut de démonstration : soins et rituels de beauté.",
+    collection: "Nos rituels de beauté",
+    action: "Simuler un rendez-vous beauté",
+    images: ["/demo/beaute.jpg", ...baseDemo("eclat-studio").images.slice(1)],
+    services: [
+      {
+        name: "Soin découverte",
+        price: "180 MAD",
+        text: "Un rituel visage imaginé pour une pause douceur.",
+      },
+      {
+        name: "Beauté des mains",
+        price: "120 MAD",
+        text: "Un soin des mains et une finition soignée.",
+      },
+      {
+        name: "Rituel détente",
+        price: "250 MAD",
+        text: "Un moment de bien-être dans une atmosphère apaisante.",
+      },
+    ],
+    events: [],
+    items: [],
+  },
+  {
+    ...baseDemo("maison-safran"),
+    slug: "demo-restaurant-familial",
+    name: "Restaurant familial",
+    sector: "Restaurant",
+    initials: "RF",
+    handle: "restaurant.familial.concept",
+    headline: "Le plaisir de se retrouver à table.",
+    intro:
+      "Une cuisine généreuse, des tables accueillantes et des plats à partager en famille. Découvrez notre carte de démonstration.",
+    bio: "Restaurant familial de démonstration : cuisine et convivialité.",
+    images: ["/demo/restaurant.jpg", ...baseDemo("maison-safran").images.slice(1)],
+    events: [],
+  },
+  {
+    ...baseDemo("neroli-botanique"),
+    slug: "demo-boutique-mode",
+    name: "Boutique de mode",
+    sector: "Commerce de détail",
+    initials: "BM",
+    handle: "boutique.mode.concept",
+    captions: [
+      "La boutique",
+      "La collection",
+      "Les accessoires",
+      "Les matières",
+      "Les silhouettes",
+      "La sélection mode",
+    ],
+    stories: ["La boutique", "La collection", "Les accessoires", "Les silhouettes"],
+    headline: "Votre style, votre signature.",
+    intro:
+      "Des silhouettes faciles à porter, des matières à découvrir et une sélection pensée pour composer votre style.",
+    bio: "Boutique de mode de démonstration : vêtements et accessoires.",
+    collection: "La sélection mode",
+    action: "Simuler une demande produit",
+    images: Array.from({ length: 6 }, () => "/demo/boutique.jpg"),
+    services: [
+      {
+        name: "Conseil silhouette",
+        price: "Sur demande",
+        text: "Imaginez les associations qui vous ressemblent.",
+      },
+      {
+        name: "Sélection personnelle",
+        price: "Sur demande",
+        text: "Composez votre sélection depuis le catalogue.",
+      },
+      {
+        name: "Essayage en boutique",
+        price: "Sur rendez-vous",
+        text: "Simulez une demande de rendez-vous.",
+      },
+    ],
+    items: [
+      {
+        title: "Chemise essentielle",
+        type: "Prêt-à-porter",
+        mode: "Collection",
+        price: "290 MAD",
+        image: 0,
+        details: "Une pièce de démonstration pour composer votre silhouette. Photo d'ambiance.",
+        features: ["Coupe confortable", "Style quotidien"],
+      },
+      {
+        title: "Veste de saison",
+        type: "Prêt-à-porter",
+        mode: "Collection",
+        price: "590 MAD",
+        image: 1,
+        details: "Une veste conceptuelle à découvrir en boutique. Photo d'ambiance.",
+        features: ["Pièce de saison", "Style polyvalent"],
+      },
+      {
+        title: "Accessoire signature",
+        type: "Accessoires",
+        mode: "Sélection",
+        price: "190 MAD",
+        image: 2,
+        details: "Un accessoire de démonstration pour compléter une tenue. Photo d'ambiance.",
+        features: ["Finition soignée", "Détail signature"],
+      },
+    ],
+    events: [],
+  },
+];
 export function findDemo(slug: string) {
-  return DEMOS.find((d) => d.slug === slug);
+  return DEMOS.find((d) => d.slug === slug) ?? LEGACY_WEBSITES.find((d) => d.slug === slug);
 }
 export const DEMO_NOTICE = "Démonstration uniquement : aucune demande réelle n’a été envoyée.";

@@ -1,5 +1,6 @@
 import { showroomSourceMessages } from "./showroom-messages";
 import { trialMessages } from "../trial-messages";
+import { portfolioWebsiteMessages } from "./portfolio-website-messages";
 // Shared French source keys; English and Modern Standard Arabic are authored below.
 const rows = `
 Votre message est prêt sur WhatsApp.|Your message is ready in WhatsApp.|رسالتك جاهزة على واتساب.
@@ -595,3 +596,4 @@ export const messages: Record<string, { en: string; ar: string }> = Object.fromE
 );
 Object.assign(messages, showroomSourceMessages);
 Object.assign(messages, trialMessages);
+Object.assign(messages, portfolioWebsiteMessages);

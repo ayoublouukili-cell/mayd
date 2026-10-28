@@ -1,5 +1,9 @@
 # Galerie et démonstrations
 
+Les cartes du portfolio proposent aussi « Visiter le site » vers une page complète. Un projet publié avec `external_url` conserve son adresse réelle (comme CHIWABOX). Les onze concepts éditoriaux ouvrent `/demonstrations/<slug>/site` ; les quatre exemples historiques de la base possèdent désormais leur propre destination au même format. Leurs noms et couvertures sont conservés. Ces quatre variantes ne sont pas dupliquées dans le catalogue éditorial.
+
+Les sites partagent les palettes et les marques graphiques des aperçus d'identité. Les variantes café, institut, restaurant familial et boutique disposent de textes et de prestations adaptés ; le café a sa propre carte et la boutique un catalogue de mode. Les formulaires restent des simulations, sans réservation, paiement ou envoi réel. L'ajout ne nécessite ni migration SQL ni modification des projets clients.
+
 L’accueil et `/realisations` utilisent `PortfolioGallery`, avec les mêmes projets publics de `projectsQuery` et les six concepts locaux de `src/lib/demonstrations.ts`. Aucun concept n’est écrit en base. Le filtre « Tous les projets » affiche chaque entrée une seule fois ; les catégories désignent les différentes facettes d’une même marque.
 
 Chaque concept propose cinq vues sur sa page existante : `?platform=site`, `instagram`, `facebook`, `tiktok` et `identite`. Le paramètre conserve l’onglet lors d’une actualisation. Le changement de langue conserve la page, l’onglet et les filtres de la galerie.

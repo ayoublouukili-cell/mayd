@@ -14,6 +14,7 @@ import { Lightbox, type LightboxImage } from "@/components/site/Lightbox";
 import { BeforeAfter } from "@/components/site/BeforeAfter";
 import { Reveal } from "@/components/site/Reveal";
 import { cn } from "@/lib/utils";
+import { projectWebsite } from "@/lib/project-website";
 export const Route = createFileRoute("/realisations/$slug")({
   loader: async ({ context, params }) => {
     const [settings, detail] = await Promise.all([
@@ -92,6 +93,7 @@ function ProjectPage() {
   }, [data]);
   if (!data) return <ProjectNotFound />;
   const { project: p, media, next } = data;
+  const website = projectWebsite(p);
   const openImage = (src: string) =>
     setLightbox(
       Math.max(
@@ -158,15 +160,15 @@ function ProjectPage() {
                     </dd>
                   </div>
                 )}
-                {p.external_url && (
+                {website && (
                   <div className="col-span-2 lg:col-span-1">
                     <a
-                      href={p.external_url}
+                      href={website}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group inline-flex items-center gap-3 rounded-full bg-primary py-3 ps-6 pe-3 text-sm font-medium text-primary-foreground"
                     >
-                      <Text value={p.external_label || "Voir le projet en ligne"} />
+                      <Text value={p.external_label || "Visiter le site"} />
                       <span className="flex h-7 w-7 items-center justify-center rounded-full bg-clay text-clay-foreground transition-transform group-hover:rotate-45">
                         <ArrowUpRight className="h-4 w-4" />
                       </span>

@@ -1,5 +1,5 @@
 import { Text, useT, Count } from "@/lib/i18n/Preferences";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import type { Demo, DemoItem } from "@/lib/demonstrations";
@@ -15,6 +15,8 @@ import { DemoForm } from "./DemoForm";
 import { PreferenceControls } from "@/components/site/PreferenceControls";
 import { WebsiteHero, RestaurantMenu } from "./SiteDirections";
 import { Brand } from "@/components/site/Header";
+import { ConceptMark } from "./ConceptCover";
+import { BRAND_UNIVERSES } from "@/lib/showroom-catalog";
 export function DemoCta() {
   return (
     <section className="demo-cta">
@@ -62,7 +64,9 @@ function Catalog({ demo, prefix }: { demo: Demo; prefix: string }) {
     ? "catalog.property.filter"
     : demo.theme === "voitures"
       ? "catalog.vehicle.filter"
-      : "catalog.product.filter";
+      : demo.slug === "demo-boutique-mode"
+        ? "Collection"
+        : "catalog.product.filter";
   return (
     <section id={`${prefix}-catalogue`} className="demo-section">
       <p className="demo-kicker">
@@ -393,9 +397,19 @@ export function DemoWebsite({ demo, full = false }: { demo: Demo; full?: boolean
           </span>
         </div>
       )}
-      <div className={`demo-website demo-${demo.theme}`}>
+      <div
+        className={`demo-website demo-${demo.theme}`}
+        style={
+          {
+            "--brand-1": BRAND_UNIVERSES[demo.theme]?.palette[0],
+            "--brand-2": BRAND_UNIVERSES[demo.theme]?.palette[1],
+            "--brand-3": BRAND_UNIVERSES[demo.theme]?.palette[2],
+          } as CSSProperties
+        }
+      >
         <nav className="demo-site-nav" aria-label={t(`Navigation du site ${demo.name}`)}>
           <a className="demo-site-brand" href={`#${prefix}-accueil`}>
+            <ConceptMark demo={demo} />
             <Text value={demo.name} />
             <span>
               <Text value={"Concept"} />

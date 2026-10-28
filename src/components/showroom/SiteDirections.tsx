@@ -115,7 +115,10 @@ export function WebsiteHero({ demo, prefix }: { demo: Demo; prefix: string }) {
             <Text value={demo.name} /> · <Text value={demo.sector} />
           </span>
           {headline}
-          {action("catalogue", "Explorer les rituels")}
+          {action(
+            "catalogue",
+            demo.slug === "demo-boutique-mode" ? "La sélection mode" : "Explorer les rituels",
+          )}
           <p className="botanical-note">
             <Text value={demo.services[0]!.text} />
           </p>
@@ -140,7 +143,7 @@ export function WebsiteHero({ demo, prefix }: { demo: Demo; prefix: string }) {
       <section id={`${prefix}-accueil`} className="direction-hero azahar-hero">
         <div className="azahar-heading">
           <span className="azahar-rule">
-            <Text value="concept.azahar.name" />
+            <Text value={demo.name} />
           </span>
           {headline}
           {action("carte", "Composer votre moment")}
@@ -378,7 +381,7 @@ export function RestaurantMenu({ demo, prefix }: { demo: Demo; prefix: string })
         </p>
       </div>
       <div>
-        {MENU.map((dish, i) => (
+        {(demo.menu ?? MENU).map((dish, i) => (
           <article key={dish.name}>
             <span>0{i + 1}</span>
             <img src={demo.images[dish.image]} alt={t(dish.name)} loading="lazy" />
